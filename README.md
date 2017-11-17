@@ -9,7 +9,7 @@ Notes:  Use "RunMe.cmd" to combine all necessary files to single "LoadQuickTurn2
 
 Status:
 
-In Development - RunMe.cmd not created yet
+In Development...
 
 All you need to run is "LoadQuickTurn2.lsp" unless you want to eval code.  If so copy the entire project and use "RunMe.cmd"
 
