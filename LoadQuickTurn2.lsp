@@ -5,7 +5,7 @@
 ;     C:QT2 is a routine for dynamically modelling swept paths of vehicles
 ;
 ;
-(defun C:QT2 (/ COLOR ENT ENTLIST ILIST P SCALE STEP VLIST)
+(defun C:QT2 (/ COLOR ENT ENTLIST ILIST P STEP VLIST)
  (command "._UNDO" "M")
  (if (= nil (setq COLOR (getint "\nEnter envelope color <34> : ")))
   (setq COLOR 34)
@@ -14,13 +14,12 @@
  (setq VLIST (cadr ILIST))
  (setq ENT (caaddr ILIST))
  (setq ENTLIST (entget ENT))
- (setq SCALE (cdr (assoc 41 ENTLIST)))
- (setq STEP (* 0.1 SCALE (- (nth 2 (cadr (car VLIST))) (nth 0 (cadr (car VLIST))))))
+ (setq STEP (* 0.1 (- (nth 2 (cadr (car VLIST))) (nth 0 (cadr (car VLIST))))))
  (setq P (list (+ (car (car ILIST)) (* (nth 0 (cadr (car VLIST))) (cos (cdr (assoc 50 ENTLIST)))))
                (+ (cadr (car ILIST)) (* (nth 0 (cadr (car VLIST))) (sin (cdr (assoc 50 ENTLIST)))))
          )
  )
- (QT:DRAWDPATH P 0.0 VLIST COLOR)
+ (QT:DRAWDPATH P STEP 0.0 VLIST COLOR)
  (foreach ENT (caddr ILIST)
   (redraw ENT)
  )
@@ -143,7 +142,7 @@
 ;     QTDRAWDPATH Draws the path from a point to a second point dynamically
 ;
 ;
-(defun QT:DRAWDPATH (P A VLIST COLOR / *error* A2 ANGLIST BLOCKLIST DRAWP DRAWSTART ENT ENVLIST JOINALL L MAKEPLINE N1 N2 NODE P2 PLIST PLLIST REP RMIN SIGN STARTLIST STARTLISTLIST STEP STOPFLAG TAN TEMPLIST TMP TOL)
+(defun QT:DRAWDPATH (P STEP A VLIST COLOR / *error* A2 ANGLIST BLOCKLIST DRAWP DRAWSTART ENT ENVLIST JOINALL L MAKEPLINE N1 N2 NODE P2 PLIST PLLIST REP RMIN SIGN STARTLIST STARTLISTLIST STOPFLAG TAN TEMPLIST TMP TOL)
  (defun *error* (msg)
   (if ENT (entdel ENT))
   ;(JOINALL)
@@ -421,7 +420,7 @@
    )
   )
  )
- (setq STOPFLAG nil ENT nil STEP 0.5)
+ (setq STOPFLAG nil ENT nil)
  (SETSTARTLIST)
  (setq STARTLISTLIST (list STARTLIST))
  (setq ANGLIST (list A))
