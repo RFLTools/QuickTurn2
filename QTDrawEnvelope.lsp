@@ -19,7 +19,7 @@
  (setq FOUND nil)
  (setq C 0)
  (while (< C (length VLIST))
-  (if (setq ENVLIST (caddr (nth C VLIST)))
+  (if (setq ENVLIST (if (= (cadr (nth C VLIST)) "LOAD") (cadddr (nth C VLIST)) (caddr (nth C VLIST))))
    (progn
     (setq FOUND T)
     (setq C2 0
