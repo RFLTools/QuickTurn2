@@ -7,24 +7,57 @@
 ;
 (defun C:QT2 (/ COLOR ENT ENTLIST ILIST P STEP VLIST)
  (command "._UNDO" "M")
- (if (= nil (setq COLOR (getint "\nEnter envelope color <34> : ")))
-  (setq COLOR 34)
- )
- (setq ILIST (QT:GETVLIST))
- (setq VLIST (cadr ILIST))
- (setq ENT (caaddr ILIST))
- (setq ENTLIST (entget ENT))
- (setq STEP (* 0.1 (- (nth 2 (cadr (car VLIST))) (nth 0 (cadr (car VLIST))))))
- (setq P (list (+ (car (car ILIST)) (* (nth 0 (cadr (car VLIST))) (cos (cdr (assoc 50 ENTLIST)))))
-               (+ (cadr (car ILIST)) (* (nth 0 (cadr (car VLIST))) (sin (cdr (assoc 50 ENTLIST)))))
-         )
- )
- (QT:DRAWDPATH P STEP 0.0 VLIST COLOR)
- (foreach ENT (caddr ILIST)
-  (redraw ENT)
- )
- (foreach ENT QT:PATHLIST
-  (entdel (car ENT))
+ (princ "\nSelect a vehicle block, polyline or <return> to insert vehicle.")
+ (if (= nil (setq ILIST (QT:GETVLIST)))
+  (C:QTMAKE)
+  (if (listp (car ILIST))
+   (progn
+    (if (= nil (setq COLOR (getint "\nEnter envelope color <34> : ")))
+     (setq COLOR 34)
+    )
+    (setq VLIST (cadr ILIST))
+    (setq ENT (caaddr ILIST))
+    (setq ENTLIST (entget ENT))
+    (setq STEP (* 0.1 (- (nth 2 (cadr (car VLIST))) (nth 0 (cadr (car VLIST))))))
+    (setq P (list (+ (car (car ILIST)) (* (nth 0 (cadr (car VLIST))) (cos (cdr (assoc 50 ENTLIST)))))
+                  (+ (cadr (car ILIST)) (* (nth 0 (cadr (car VLIST))) (sin (cdr (assoc 50 ENTLIST)))))
+            )
+    )
+    (QT:DRAWDPATH P STEP 0.0 VLIST COLOR)
+    (foreach ENT (caddr ILIST)
+     (redraw ENT)
+    )
+    (foreach ENT QT:PATHLIST
+     (entdel (car ENT))
+    )
+   )
+   (if ILIST
+    (progn
+     (setq P (cadr ILIST))
+     (setq ENT (car ILIST))
+     (setq ENTLIST (entget ENT))
+     (if (listp (car (setq ILIST (QT:GETVLIST))))
+      (progn
+       (if (= nil (setq COLOR (getint "\nEnter envelope color <34> : ")))
+        (setq COLOR 34)
+       )
+       (setq STEP (* 0.1 (- (nth 2 (cadr (car VLIST))) (nth 0 (cadr (car VLIST))))))
+       (setq P (list (+ (car (car ILIST)) (* (nth 0 (cadr (car VLIST))) (cos (cdr (assoc 50 ENTLIST)))))
+                     (+ (cadr (car ILIST)) (* (nth 0 (cadr (car VLIST))) (sin (cdr (assoc 50 ENTLIST)))))
+               )
+       )
+       (QT:DRAWPATH P ENT STEP 0.0 VLIST COLOR)
+       (foreach ENT (caddr ILIST)
+        (redraw ENT)
+       )
+       (foreach ENT QT:PATHLIST
+        (entdel (car ENT))
+       )
+      )
+     )
+    )
+   )
+  )
  )
  T
 );
@@ -863,13 +896,13 @@
 ;     QTGETVLIST Returns a list of temporary vehicles and their values
 ;
 ;
-(defun QT:GETVLIST ( / *error* DLIST ENT ENTORIG ENVLIST LA LB P STOPFLAG VLIST VLISTORIG)
+(defun QT:GETVLIST ( / *error* DLIST ENT ENTORIG ENVLIST LA LB P PORIG STOPFLAG VLIST VLISTORIG)
  (defun *error* (msg)
   (print msg)
  )
  (setq P nil STOPFLAG nil VLIST nil LA nil LB nil)
  (while (= STOPFLAG nil)
-  (if (/= (car (setq DLIST (QT:GETD (setq ENTORIG (car (entsel)))))) nil)
+  (if (/= (car (setq DLIST (QT:GETD (setq ENTORIG (car (setq PORIG (entsel))))))) nil)
    (progn
     (if (= nil P) (setq P (cdr (assoc 10 (entget ENTORIG)))))
     (if (nth 5 DLIST) (setq LB (nth 5 DLIST)))
@@ -903,7 +936,7 @@
    (foreach ENT VLIST (redraw (car ENT)))
    (list P VLIST VLISTORIG)
   )
-  nil
+  PORIG
  )
 )
 ;

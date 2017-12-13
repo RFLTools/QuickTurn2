@@ -5,13 +5,13 @@
 ;     QTGETVLIST Returns a list of temporary vehicles and their values
 ;
 ;
-(defun QT:GETVLIST ( / *error* DLIST ENT ENTORIG ENVLIST LA LB P STOPFLAG VLIST VLISTORIG)
+(defun QT:GETVLIST ( / *error* DLIST ENT ENTORIG ENVLIST LA LB P PORIG STOPFLAG VLIST VLISTORIG)
  (defun *error* (msg)
   (print msg)
  )
  (setq P nil STOPFLAG nil VLIST nil LA nil LB nil)
  (while (= STOPFLAG nil)
-  (if (/= (car (setq DLIST (QT:GETD (setq ENTORIG (car (entsel)))))) nil)
+  (if (/= (car (setq DLIST (QT:GETD (setq ENTORIG (car (setq PORIG (entsel))))))) nil)
    (progn
     (if (= nil P) (setq P (cdr (assoc 10 (entget ENTORIG)))))
     (if (nth 5 DLIST) (setq LB (nth 5 DLIST)))
@@ -45,6 +45,6 @@
    (foreach ENT VLIST (redraw (car ENT)))
    (list P VLIST VLISTORIG)
   )
-  nil
+  PORIG
  )
 )
