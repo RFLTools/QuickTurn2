@@ -10,6 +10,7 @@ COPY /B ".\CQT2.lsp" + ^
         ".\QTDrawAtPos.lsp" + ^
         ".\QTDrawAtStart.lsp" + ^
         ".\QTDrawDPath.lsp" + ^
+        ".\QTDrawPath.lsp" + ^
         ".\QTDrawEnvelope.lsp" + ^
         ".\QTGetAList.lsp" + ^
         ".\QTGetD.lsp" + ^
