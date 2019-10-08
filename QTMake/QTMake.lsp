@@ -50,6 +50,7 @@
                        (list "TAC-2017-WB-19" "*WheelLeftM1" "*WheelRightM1" "TAC-2017-WB-19-TRUCK" "TAC-2017-WB-19-TRAILER")
                        (list "TAC-2017-WB-20" "*WheelLeftM1" "*WheelRightM1" "TAC-2017-WB-20-TRUCK" "TAC-2017-WB-20-TRAILER")
                        (list "Special-19HeavyHaul" "*WheelLeftM2" "*WheelRightM2" "*WheelLeftM6" "*WheelRightM6" "Special-19HeavyHaul-Truck" "Special-19HeavyHaul-Pup1" "Special-19HeavyHaul-Pup2" "Special-19HeavyHaul-Trailer" "Special-19HeavyHaul-Pup3" "Special-19HeavyHaul-Pup4")
+                       (list "Special-BoosterC2" "*WheelLeftM2" "*WheelRightM2" "Special-BoosterC2-Truck" "Special-BoosterC2-Trailer1" "Special-BoosterC2-Trailer2" "Special-BoosterC2-Trailer3")
                        (list "BC_MOTI-WB-15" "*WheelLeftM1" "*WheelRightM1" "BC_MOTI-WB-15-TRUCK" "BC_MOTI-WB-15-TRAILER")
                        (list "BC_MOTI-LG3" "*WheelLeftM1" "*WheelRightM1" "BC_MOTI-LG3-TRUCK" "BC_MOTI-LG3-TRAILER1" "BC_MOTI-LG3-TRAILER2" "BC_MOTI-LG3-LOAD")
                        (list "BC_MOTI-LG5" "*WheelLeftM1" "*WheelRightM1" "BC_MOTI-LG5-TRUCK" "BC_MOTI-LG5-TRAILER1" "BC_MOTI-LG5-TRAILER2" "BC_MOTI-LG5-LOAD")
