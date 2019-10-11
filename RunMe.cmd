@@ -24,6 +24,8 @@ COPY /B ".\CQT2.lsp" + ^
         ".\QTMAke\QTMake.lsp" + ^
         ".\QTMAke\QTMakeDCL.lsp" + ^
         ".\QTMAke\QTMakeOUT.lsp" + ^
-        ".\QTMAke\QTMakeSLB.lsp" ^
+        ".\QTMAke\QTMakeSLB.lsp" + ^
+        ".\QTMAke\QTAddCustom.lsp" + ^
+        ".\QTMAke\QTWBlockListCustom.lsp" ^
         ".\LoadQuickTurn2.lsp"
 pause
