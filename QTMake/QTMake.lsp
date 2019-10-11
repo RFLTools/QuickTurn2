@@ -6,7 +6,7 @@
 ;     C:QTMAKE is a utility to create QuickTurn Vehicle Blocks
 ;
 ;
-(defun C:QTMAKE (/ DCL_ID ACCEPTQTMAKE ACTIVEDOC ACTIVESPACE ANGBASE ANGDIR ATTREQ BLOCKINDEX BLOCKLIST CANCELQTMAKE CONTINUEFLAG D D0 DG DH ENT ENTLIST ENTSET L LA LB P PBASE PLA PLB WF WR UPDATEBLOCK TMP)
+(defun C:QTMAKE (/ DCL_ID ACCEPTQTMAKE ACTIVEDOC ACTIVESPACE ANGBASE ANGDIR ATTREQ BLOCKINDEX BLOCKLIST BLOCKNAME C CANCELQTMAKE COLUMN CONTINUEFLAG CUSTOMFILE CUSTOMFOLDER CUSTOMLIST D D0 DG DH ENT ENTLIST ENTSET INFILE INLINE L LA LB P PBASE PLA PLB WF WR UPDATEBLOCK TMP)
  (command "._UNDO" "M")
  (setq CMDECHO (getvar "CMDECHO"))
  (setvar "CMDECHO" 0)
@@ -19,6 +19,26 @@
  (setvar "ATTREQ" 0)
  (vl-load-com)
   
+ (defun COLUMN (LINE COL DELIM)
+  (if (= (vl-string-search DELIM LINE) nil)
+   nil
+   (progn
+    (while (and (> (setq COL (1- COL)) 0)
+                (/= (vl-string-search DELIM LINE) nil)
+           )
+     (setq LINE (substr LINE (+ (vl-string-search DELIM LINE) 2)))
+    )
+    (if (= COL 0)
+     (if (/= (vl-string-search DELIM LINE) nil)
+      (substr LINE 1 (vl-string-search DELIM LINE))
+      LINE
+     )
+     nil
+    )
+   )
+  )
+ )
+ 
  (defun ACCEPTQTMAKE (/ C ENT ENTLIST NODE P ORTHOMODE OSMODE)
   (done_dialog)
   (unload_dialog DCL_ID)
@@ -112,7 +132,23 @@
                        (list "TAC-1999-P" "*WheelLeftM3" "*WheelRightM3" "TAC-1999-P")
                        (list "TAC-1999-WB-19" "*WheelLeftM1" "*WheelRightM1" "TAC-1999-WB-19-TRUCK" "TAC-1999-WB-19-TRAILER")
                        (list "TAC-1999-WB-20" "*WheelLeftM1" "*WheelRightM1" "TAC-1999-WB-20-TRUCK" "TAC-1999-WB-20-TRAILER")
-)
+                 )
+ )
+ (if (setq CUSTOMFILE (findfile (strcat (getenv "programdata") "\\RFLTools\\QuickTurn\\CustomVehicles.txt")))
+  (progn
+   (setq CUSTOMFOLDER (findfile (strcat (getenv "programdata") "\\RFLTools\\QuickTurn")))
+   (setq INFILE (open CUSTOMFILE "r"))
+   (while (/= nil (setq INLINE (read-line INFILE)))
+    (setq C 1)
+    (setq CUSTOMLIST nil)
+    (while (/= nil (setq BLOCKNAME (COLUMN INLINE C ",")))
+     (setq CUSTOMLIST (append CUSTOMLIST (list BLOCKNAME)))
+     (setq C (1+ C))
+    )
+    (setq BLOCKLIST (append BLOCKLIST (list CUSTOMLIST)))
+   )
+   (close INFILE)
+  )
  )
 
  (setq BLOCKINDEX 0)
@@ -162,15 +198,19 @@
 
   (start_dialog)
  )
- 
+(setq XXX (substr (car (nth BLOCKINDEX BLOCKLIST)) 1 7))
+
  (if (/= nil BLOCKINDEX)
   (progn
    (if (= nil (cdr (nth BLOCKINDEX BLOCKLIST)))
     (QT:MAKE (car (nth BLOCKINDEX BLOCKLIST)))
-    (foreach NODE (cdr (nth BLOCKINDEX BLOCKLIST))
-     (if (= "*" (substr NODE 1 1))
-      (if (= nil (tblsearch "BLOCK" (substr NODE 2))) (QT:MAKE (substr NODE 2)))
-      (if (= nil (tblsearch "BLOCK" NODE)) (QT:MAKE NODE))
+    (if (= "CUSTOM-" (substr (car (nth BLOCKINDEX BLOCKLIST)) 1 7))
+     (load (strcat CUSTOMFOLDER "\\" (car (nth BLOCKINDEX BLOCKLIST)) ".lsp"))
+     (foreach NODE (cdr (nth BLOCKINDEX BLOCKLIST))
+      (if (= "*" (substr NODE 1 1))
+       (if (= nil (tblsearch "BLOCK" (substr NODE 2))) (QT:MAKE (substr NODE 2)))
+       (if (= nil (tblsearch "BLOCK" NODE)) (QT:MAKE NODE))
+      )
      )
     )
    )
