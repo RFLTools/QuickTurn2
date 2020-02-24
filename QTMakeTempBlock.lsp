@@ -5,7 +5,7 @@
 ;     QTMAKETEMPBLOCK creates a temporary block copied from the supplied entity using only its LINES ARCS CIRCLES POLYLINES and NESTED BLOCKS
 ;
 ;
-(defun QT:MAKETEMPBLOCK (ENT / BLOCKANG BLOCKLAYER BLOCKNAME BLOCKP BLOCKSCALE ENT2 ENTB ENTLIST ENTLISTB ENTLISTNODE ENTLISTNEW ENTNEW NODE TMP)
+(defun QT:MAKETEMPBLOCK (ENT / BLOCKANG BLOCKLAYER BLOCKNAME BLOCKP ENT2 ENTB ENTLIST ENTLISTB ENTLISTNODE ENTLISTNEW ENTNEW NODE SX SY SZ TMP)
  (setq ENTLIST (entget ENT))
  (if (/= "INSERT" (cdr (assoc 0 ENTLIST)))
   (eval nil)
@@ -13,7 +13,9 @@
    (setq BLOCKNAME (cdr (assoc 2 ENTLIST)))
    (setq BLOCKLAYER (cdr (assoc 8 ENTLIST)))
    (setq BLOCKP (cdr (assoc 10 ENTLIST)))
-   (setq BLOCKSCALE (cdr (assoc 41 ENTLIST)))
+   (setq SX (cdr (assoc 41 ENTLIST)))
+   (setq SY (cdr (assoc 42 ENTLIST)))
+   (setq SZ (cdr (assoc 43 ENTLIST)))
    (setq BLOCKANG (cdr (assoc 50 ENTLIST)))
    (setq ENTLIST (tblsearch "BLOCK" BLOCKNAME))
    (setq ENT2 (cdr (assoc -2 ENTLIST)))
@@ -259,9 +261,9 @@
                     (cons 2 TMP)
                     (cons 8 BLOCKLAYER)
                     (cons 10 BLOCKP)
-                    (cons 41 BLOCKSCALE)
-                    (cons 42 BLOCKSCALE)
-                    (cons 43 BLOCKSCALE)
+                    (cons 41 SX)
+                    (cons 42 SY)
+                    (cons 43 SZ)
                     (cons 50 BLOCKANG)
               )
      )
